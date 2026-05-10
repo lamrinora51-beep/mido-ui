@@ -1,91 +1,21 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة تحكم Mido Bot</title>
-    <style>
-        :root {
-            --primary-blue: #1e3a8a;
-            --secondary-blue: #3b82f6;
-            --bg-dark: #0f172a;
-            --text-light: #f8fafc;
-        }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-light);
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
-        }
-        .container {
-            background-color: #1e293b;
-            padding: 2rem;
-            border-radius: 1.5rem;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            text-align: center;
-            width: 90%;
-            max-width: 400px;
-            border: 2px solid var(--secondary-blue);
-        }
-        h1 { color: var(--secondary-blue); margin-bottom: 0.5rem; }
-        .status { font-size: 0.9rem; color: #10b981; margin-bottom: 1.5rem; }
-        .counter-box {
-            background: rgba(59, 130, 246, 0.1);
-            padding: 1.5rem;
-            border-radius: 1rem;
-            margin-bottom: 1.5rem;
-        }
-        #counter { font-size: 3rem; font-weight: bold; color: var(--text-light); }
-        .label { font-size: 0.8rem; color: #94a3b8; }
-        button {
-            background-color: var(--secondary-blue);
-            color: white;
-            border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-        button:active { transform: scale(0.95); }
-    </style>
-</head>
-<body>
+import telebot
+from telebot import types
 
-<div class="container">
-    <h1>Mido Dashboard</h1>
-    <div class="status">● النظام متصل وجاهز</div>
-    
-    <div class="counter-box">
-        <div id="counter">0</div>
-        <div class="label">إجمالي العمليات المنجزة</div>
-    </div>
+API_TOKEN = '8778736147:AAF-hN6u6Xl_Csr_2ulC-oPVP1UP6QE48BI'
+bot = telebot.TeleBot(API_TOKEN)
 
-    <button onclick="updateData()">تحديث البيانات</button>
-</div>
+@bot.message_handler(commands=['start'])
+def start(message):
+    markup = types.InlineKeyboardMarkup()
+    web_app = types.WebAppInfo("https://lamrinora51-beep.github.io/mido-ui/")
+    button = types.InlineKeyboardButton(text="📊 فتح لوحة التحكم", web_app=web_app)
+    markup.add(button)
+    bot.send_message(message.chat.id, "مرحباً محمد! اضغط للتحكم:", reply_markup=markup)
 
-<script>
-    // عداد وهمي لإظهار التفاعل
-    let count = 100;
-    const counterElement = document.getElementById('counter');
+# هذه الدالة تستقبل البيانات من الواجهة الزرقاء
+@bot.message_handler(content_types=['web_app_data'])
+def answer(webAppMes):
+    print(f"وصل أمر من الواجهة: {webAppMes.web_app_data.data}") # ستظهر في Termux
+    bot.send_message(webAppMes.chat.id, f"✅ تم استلام الأمر: {webAppMes.web_app_data.data}")
 
-    function updateData() {
-        count += Math.floor(Math.random() * 10) + 1;
-        counterElement.innerText = count;
-        alert("تم تحديث بيانات الروبوت بنجاح!");
-    }
-
-    // زيادة تلقائية بسيطة
-    setInterval(() => {
-        count++;
-        counterElement.innerText = count;
-    }, 5000);
-</script>
-
-</body>
-</html>
+bot.polling()
