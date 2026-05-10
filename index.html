@@ -1,35 +1,45 @@
-<div class="card" style="margin-top: 20px; border: 1px solid #22c55e; background: rgba(16, 185, 129, 0.1);">
-    <h3 style="color: #22c55e; font-size: 1rem;">🛡️ ربط آمن (بدون كلمة سر)</h3>
-    <p style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 15px;">
-        نحن نستخدم بروتوكول الربط المباشر عبر المعرف فقط. خصوصيتك محمية 100%.
-    </p>
-    
-    <div style="text-align: right;">
-        <label style="display: block; font-size: 0.8rem; margin-bottom: 5px;">رقم IGG ID:</label>
-        <input type="number" id="igg_id" placeholder="مثال: 7273712063" 
-               style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #334155; background: #0f172a; color: white; margin-bottom: 15px;">
-        
-        <label style="display: block; font-size: 0.8rem; margin-bottom: 5px;">رقم السيرفر (Server ID):</label>
-        <input type="number" id="server_id" placeholder="مثال: 450" 
-               style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #334155; background: #0f172a; color: white;">
-        
-        <button onclick="startSecureBind()" 
-                style="width: 100%; margin-top: 20px; padding: 15px; border-radius: 10px; border: none; background: #22c55e; color: white; font-weight: bold; cursor: pointer;">
-            تفعيل الربط بالقلعة
-        </button>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mido Sona Control</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { font-family: sans-serif; background-color: #0f172a; color: white; padding: 20px; text-align: center; }
+        .input-group { margin-bottom: 15px; text-align: right; }
+        input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #1e293b; color: white; box-sizing: border-box; }
+        button { width: 100%; padding: 15px; background: #22c55e; border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h2>🔗 ربط القلعة الآمن</h2>
+    <div class="input-group">
+        <label>رقم IGG ID:</label>
+        <input type="number" id="igg_id" placeholder="أدخل رقم IGG">
     </div>
-</div>
+    <div class="input-group">
+        <label>رقم السيرفر:</label>
+        <input type="number" id="server_id" placeholder="أدخل رقم السيرفر">
+    </div>
+    <button onclick="sendToBot()">تفعيل الربط الآن</button>
 
-<script>
-    function startSecureBind() {
-        const igg = document.getElementById('igg_id').value;
-        const sid = document.getElementById('server_id').value;
-        if(igg && sid) {
-            // إرسال البيانات للبوت في Termux
-            tg.sendData(`BIND_SECURE:${igg}:${sid}`);
-            tg.close();
-        } else {
-            alert("يرجى إكمال البيانات المطلوبة للربط.");
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+
+        function sendToBot() {
+            const igg = document.getElementById('igg_id').value;
+            const sid = document.getElementById('server_id').value;
+
+            if (igg && sid) {
+                // إرسال البيانات بصيغة يفهمها البوت
+                tg.sendData("BIND_SECURE:" + igg + ":" + sid);
+                tg.close(); // إغلاق الواجهة بعد الإرسال
+            } else {
+                alert("يرجى إكمال البيانات");
+            }
         }
-    }
-</script>
+    </script>
+</body>
+</html>
