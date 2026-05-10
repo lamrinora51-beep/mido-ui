@@ -1,21 +1,32 @@
-import telebot
-from telebot import types
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mido Dashboard</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { font-family: sans-serif; background-color: #0f172a; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .container { background-color: #1e293b; padding: 2rem; border-radius: 1.5rem; text-align: center; width: 85%; border: 2px solid #3b82f6; }
+        h2 { color: #3b82f6; }
+        button { background-color: #3b82f6; color: white; border: none; padding: 1rem; border-radius: 0.5rem; cursor: pointer; font-weight: bold; width: 100%; margin-top: 1.5rem; font-size: 1.1rem; }
+        button:active { transform: scale(0.98); background-color: #2563eb; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>لوحة تحكم Mido</h2>
+        <p>مرحباً بك في نظام الإدارة</p>
+        <button onclick="sendAttack()">⚔️ إرسال أمر هجوم</button>
+    </div>
 
-API_TOKEN = '8778736147:AAF-hN6u6Xl_Csr_2ulC-oPVP1UP6QE48BI'
-bot = telebot.TeleBot(API_TOKEN)
-
-@bot.message_handler(commands=['start'])
-def start(message):
-    markup = types.InlineKeyboardMarkup()
-    web_app = types.WebAppInfo("https://lamrinora51-beep.github.io/mido-ui/")
-    button = types.InlineKeyboardButton(text="📊 فتح لوحة التحكم", web_app=web_app)
-    markup.add(button)
-    bot.send_message(message.chat.id, "مرحباً محمد! اضغط للتحكم:", reply_markup=markup)
-
-# هذه الدالة تستقبل البيانات من الواجهة الزرقاء
-@bot.message_handler(content_types=['web_app_data'])
-def answer(webAppMes):
-    print(f"وصل أمر من الواجهة: {webAppMes.web_app_data.data}") # ستظهر في Termux
-    bot.send_message(webAppMes.chat.id, f"✅ تم استلام الأمر: {webAppMes.web_app_data.data}")
-
-bot.polling()
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        function sendAttack() {
+            // إرسال البيانات للبوت في Termux
+            tg.sendData("بدء الهجوم الآن");
+        }
+    </script>
+</body>
+</html>
