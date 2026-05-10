@@ -2,32 +2,193 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mido Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mido Sona Dashboard</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        body { font-family: sans-serif; background-color: #0f172a; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .container { background-color: #1e293b; padding: 2.5rem; border-radius: 1.5rem; text-align: center; width: 85%; border: 2px solid #3b82f6; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-        h2 { color: #3b82f6; margin-bottom: 20px; }
-        button { background-color: #3b82f6; color: white; border: none; padding: 1.2rem; border-radius: 0.8rem; cursor: pointer; font-weight: bold; width: 100%; font-size: 1.2rem; transition: 0.3s; }
-        button:active { transform: scale(0.95); background-color: #2563eb; }
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
+
+        :root {
+            --bg-color: #0b0e14;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --accent-blue: #3b82f6;
+            --gold: #f59e0b;
+            --danger: #ef4444;
+            --success: #10b981;
+            --text-main: #f8fafc;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-color);
+            background-image: radial-gradient(circle at top right, #1e293b, transparent);
+            color: var(--text-main);
+            margin: 0;
+            padding: 15px;
+            overflow-x: hidden;
+            user-select: none;
+        }
+
+        /* رأس الصفحة - الستايل الاحترافي */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 5px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .status-badge {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid var(--success);
+        }
+
+        .pulse {
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+            box-shadow: 0 0 0 rgba(16, 185, 129, 0.4);
+            animation: pulse-animation 2s infinite;
+        }
+
+        @keyframes pulse-animation {
+            0% { box-shadow: 0 0 0 0px rgba(16, 185, 129, 0.7); }
+            100% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+        }
+
+        /* شبكة الموارد - تصميم سونا */
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .res-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 15px;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: 0.3s;
+        }
+
+        .res-card i { font-size: 1.5rem; margin-bottom: 8px; }
+        .wood { color: #8b4513; }
+        .food { color: #22c55e; }
+        .iron { color: #94a3b8; }
+        .gold { color: #fbbf24; }
+
+        .res-card span { font-size: 0.8rem; color: #94a3b8; }
+        .res-card b { font-size: 1.1rem; margin-top: 4px; }
+
+        /* مركز العمليات - الأزرار الكبيرة */
+        .actions-title { margin: 25px 5px 15px; font-weight: bold; color: var(--accent-blue); }
+        
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .btn {
+            background: var(--card-bg);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: white;
+            padding: 18px;
+            border-radius: 15px;
+            font-family: 'Cairo', sans-serif;
+            font-weight: bold;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn:active { transform: scale(0.95); background: var(--accent-blue); }
+        .btn i { font-size: 1.3rem; }
+        
+        .btn-trade { border-color: var(--success); }
+        .btn-shield { border-color: var(--gold); }
+        .btn-attack { border-color: var(--danger); }
+
+        .footer-note {
+            text-align: center;
+            font-size: 0.7rem;
+            color: #475569;
+            margin-top: 30px;
+            letter-spacing: 1px;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>نظام Mido للإدارة</h2>
-        <p>اضغط للبدء فوراً</p>
-        <button onclick="executeAction()">⚔️ إرسال أمر هجوم</button>
+
+    <div class="header">
+        <div>
+            <h2 style="margin:0; font-size: 1.2rem;">Mido Sona Pro</h2>
+            <small style="color: #64748b;">قائد المملكة #100</small>
+        </div>
+        <div class="status-badge">
+            <div class="pulse"></div>
+            متصل الآن
+        </div>
     </div>
+
+    <div class="resource-grid">
+        <div class="res-card"><i class="fas fa-tree wood"></i><span>خشب</span><b>1.4M</b></div>
+        <div class="res-card"><i class="fas fa-wheat-awn food"></i><span>طعام</span><b>920K</b></div>
+        <div class="res-card"><i class="fas fa-cubes iron"></i><span>حديد</span><b>210K</b></div>
+        <div class="res-card"><i class="fas fa-coins gold"></i><span>ذهب</span><b>85K</b></div>
+    </div>
+
+    <div class="actions-title">مركز العمليات</div>
+
+    <div class="action-grid">
+        <button class="btn btn-trade" onclick="send('بدء_التجارة')">
+            <i class="fas fa-truck-fast"></i>
+            تجارة تلقائية
+        </button>
+        <button class="btn btn-shield" onclick="send('تفعيل_الدرع')">
+            <i class="fas fa-shield-halved"></i>
+            تنشيط الدرع
+        </button>
+        <button class="btn" onclick="send('جمع_الموارد')">
+            <i class="fas fa-hand-holding-hand"></i>
+            جمع الموارد
+        </button>
+        <button class="btn btn-attack" onclick="send('بدء_الهجوم')">
+            <i class="fas fa-crosshairs"></i>
+            بدء هجوم
+        </button>
+    </div>
+
+    <div class="footer-note">MIDO SONA SYSTEM V2.0</div>
 
     <script>
         const tg = window.Telegram.WebApp;
+        tg.expand(); // تمديد الواجهة
         tg.ready();
-        tg.expand();
 
-        function executeAction() {
-            // إرسال النص للبوت وإغلاق النافذة
-            tg.sendData("بدء الهجوم الآن");
+        function send(command) {
+            // إضافة اهتزاز بسيط للهاتف عند الضغط (إذا كان مدعوماً)
+            if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+            
+            // إرسال الأمر للبوت في Termux
+            tg.sendData(command);
         }
     </script>
 </body>
