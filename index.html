@@ -1,19 +1,35 @@
-<div class="card" style="margin-top: 20px; text-align: right; background: rgba(15, 23, 42, 0.8);">
-    <h3 style="color: var(--sona-blue); font-size: 0.9rem;">⚙️ إعدادات الربط المباشر</h3>
-    <input type="text" id="igg_id" placeholder="أدخل رقم IGG ID" style="width: 90%; padding: 10px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #334155; background: #0b0e14; color: white;">
-    <input type="text" id="server_id" placeholder="أدخل رقم السيرفر (Server ID)" style="width: 90%; padding: 10px; border-radius: 8px; border: 1px solid #334155; background: #0b0e14; color: white;">
-    <button onclick="saveSettings()" style="margin-top: 10px; background: var(--success); color: white; border: none; padding: 8px 20px; border-radius: 8px; cursor: pointer;">حفظ وربط</button>
+<div class="card" style="margin-top: 20px; border: 1px solid #22c55e; background: rgba(16, 185, 129, 0.1);">
+    <h3 style="color: #22c55e; font-size: 1rem;">🛡️ ربط آمن (بدون كلمة سر)</h3>
+    <p style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 15px;">
+        نحن نستخدم بروتوكول الربط المباشر عبر المعرف فقط. خصوصيتك محمية 100%.
+    </p>
+    
+    <div style="text-align: right;">
+        <label style="display: block; font-size: 0.8rem; margin-bottom: 5px;">رقم IGG ID:</label>
+        <input type="number" id="igg_id" placeholder="مثال: 7273712063" 
+               style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #334155; background: #0f172a; color: white; margin-bottom: 15px;">
+        
+        <label style="display: block; font-size: 0.8rem; margin-bottom: 5px;">رقم السيرفر (Server ID):</label>
+        <input type="number" id="server_id" placeholder="مثال: 450" 
+               style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #334155; background: #0f172a; color: white;">
+        
+        <button onclick="startSecureBind()" 
+                style="width: 100%; margin-top: 20px; padding: 15px; border-radius: 10px; border: none; background: #22c55e; color: white; font-weight: bold; cursor: pointer;">
+            تفعيل الربط بالقلعة
+        </button>
+    </div>
 </div>
 
 <script>
-    function saveSettings() {
+    function startSecureBind() {
         const igg = document.getElementById('igg_id').value;
         const sid = document.getElementById('server_id').value;
         if(igg && sid) {
-            tg.sendData(`ربط:${igg}:${sid}`);
-            alert("تم إرسال بيانات الربط لـ Termux");
+            // إرسال البيانات للبوت في Termux
+            tg.sendData(`BIND_SECURE:${igg}:${sid}`);
+            tg.close();
         } else {
-            alert("يرجى إدخال البيانات كاملة");
+            alert("يرجى إكمال البيانات المطلوبة للربط.");
         }
     }
 </script>
